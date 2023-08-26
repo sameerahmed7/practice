@@ -1,0 +1,79 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid black;
+        }
+        
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+
+    </div>
+    <button onclick="apicaller()">CLICK ME</button>
+    <script>
+        async function apicaller() {
+            let div = document.getElementById('root');
+            let apidata = await fetch('https://data.covid19india.org/data.json');
+            apidata = await apidata.json();
+
+            let table = document.createElement('table');
+            let thead = document.createElement('thead');
+            let tbody = document.createElement('tbody');
+
+            let headerRow = document.createElement('tr');
+            let headers = ['Daily Confirmed', 'Date', 'Total Confirmed', 'Total Deceased'];
+
+            headers.forEach(headerText => {
+                let th = document.createElement('th');
+                th.appendChild(document.createTextNode(headerText));
+                headerRow.appendChild(th);
+            });
+
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            apidata.cases_time_series.forEach(item => {
+                let row = document.createElement('tr');
+                let rowData = [
+                    item.dailyconfirmed,
+                    item.date,
+                    item.totalconfirmed,
+                    item.totaldeceased
+                ];
+
+                rowData.forEach(text => {
+                    let cell = document.createElement('td');
+                    cell.appendChild(document.createTextNode(text));
+                    row.appendChild(cell);
+                });
+
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(tbody);
+            div.appendChild(table);
+
+            console.log(apidata.cases_time_series);
+        }
+    </script>
+</body>
+
+</html>
+
